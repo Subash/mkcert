@@ -40,8 +40,7 @@ async function createCertificate({ subject, issuer, extensions, validityDays, si
 }
 
 export async function createCA({ organization, countryCode, state, locality, validityDays }) {
-  //Certificate attributes
-  //https://tools.ietf.org/html/rfc1779
+  //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: organization },
     { name: 'countryName', value: countryCode },
@@ -65,8 +64,7 @@ export async function createCA({ organization, countryCode, state, locality, val
 }
 
 export async function createSSL({ addresses, validityDays, caPrivateKey, caCertificate }) {
-  //Certificate attributes
-  //https://tools.ietf.org/html/rfc1779
+  //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: addresses[0] } //Use the first address as common name
   ];
@@ -77,7 +75,7 @@ export async function createSSL({ addresses, validityDays, caPrivateKey, caCerti
     { name: 'keyUsage', digitalSignature: true, keyEncipherment: true, critical: true },
     { name: 'extKeyUsage', serverAuth: true, clientAuth: true },
     { name: 'subjectAltName', altNames: addresses.map( address=> {
-      // Available Types: https://github.com/digitalbazaar/forge/blob/8e54eca094b47a1b7ab62de45f8c3748a8bf9b15/lib/x509.js#L1599
+      // Available Types: https://git.io/fptng
       const types = { domain: 2, ip: 7 };
       if(isIp(address)) {
         return { type: types.ip, ip: address };
