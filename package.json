@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "is-ip": "^2.0.0",
-    "node-forge": "^0.7.6"
+    "node-forge": "^0.7.6",
+    "random-int": "^1.0.0"
   }
 }

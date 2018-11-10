@@ -1,18 +1,20 @@
 import forge, { pki } from 'node-forge';
 import { promisify } from 'util';
 import isIp from 'is-ip';
+import randomInt from 'random-int';
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
 
 async function createCertificate({ subject, issuer, extensions, validityDays, signWith }) {
   const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
   const cert = pki.createCertificate();
+  const serial = randomInt(50000, 99999).toString(); //Generate a random number between 50K and 100K
 
   //Use the provided private key to sign the certificate if that exists; otherwise sign the certificate with own key
   signWith = signWith? pki.privateKeyFromPem(signWith): keyPair.privateKey; 
 
   //Set public key
   cert.publicKey = keyPair.publicKey;
-  // cert.serialNumber = '01'; //@TODO: Generate Unique Serial Number
+  cert.serialNumber = Buffer.from(serial).toString('hex'); //Hex encode the serial number
 
   //Validity
   cert.validity.notBefore = new Date();
