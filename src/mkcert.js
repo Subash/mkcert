@@ -34,7 +34,7 @@ async function createCertificate({ subject, issuer, extensions, validityDays, si
   return {
     privateKey: pki.privateKeyToPem(keyPair.privateKey),
     certificate: pki.certificateToPem(cert)
-  }
+  };
 }
 
 export async function createCA({ organization, countryCode, state, locality, validityDays }) {
