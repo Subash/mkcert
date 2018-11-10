@@ -41,5 +41,9 @@
     "babel-core": "^7.0.0-bridge.0",
     "del-cli": "^1.1.0",
     "jest": "^23.6.0"
+  },
+  "dependencies": {
+    "is-ip": "^2.0.0",
+    "node-forge": "^0.7.6"
   }
 }
