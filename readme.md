@@ -76,7 +76,7 @@ mkcert.createCertificate({
 .then((cert)=> {
   console.log(cert.key, cert.cert);
   
-  //Create a full chain certificate by merging CA and SSL certificates
+  //Create a full chain certificate by merging CA and domain certificates
   console.log(`${cert.cert}\n${ca.cert}`);
 })
 .catch(err=> console.error(err));
