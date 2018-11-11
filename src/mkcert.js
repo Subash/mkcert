@@ -34,8 +34,8 @@ async function createCertificate({ subject, issuer, extensions, validityDays, si
   cert.sign(signWith, forge.md.sha256.create());
 
   return {
-    privateKey: pki.privateKeyToPem(keyPair.privateKey),
-    certificate: pki.certificateToPem(cert)
+    key: pki.privateKeyToPem(keyPair.privateKey),
+    cert: pki.certificateToPem(cert)
   };
 }
 
@@ -63,7 +63,7 @@ export async function createCA({ organization, countryCode, state, locality, val
   });
 }
 
-export async function createSSL({ addresses, validityDays, caPrivateKey, caCertificate }) {
+export async function createSSL({ addresses, validityDays, caKey, caCert }) {
   //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: addresses[0] } //Use the first address as common name
@@ -86,14 +86,14 @@ export async function createSSL({ addresses, validityDays, caPrivateKey, caCerti
   ];
 
   //Parse CA certificate
-  const caCert = pki.certificateFromPem(caCertificate);
+  const ca = pki.certificateFromPem(caCert);
 
   //Create the cert
   return await createCertificate({
     subject: attributes,
-    issuer: caCert.subject.attributes,
+    issuer: ca.subject.attributes,
     extensions: extensions,
     validityDays: validityDays,
-    signWith: caPrivateKey
+    signWith: caKey
   });
 }

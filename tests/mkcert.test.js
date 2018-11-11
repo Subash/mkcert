@@ -11,8 +11,8 @@ test('Test createCA()', async ()=> {
     validityDays: 365
   });
   
-  expect(ca.privateKey).toBeDefined();
-  expect(ca.certificate).toBeDefined();
+  expect(ca.key).toBeDefined();
+  expect(ca.cert).toBeDefined();
 });
 
 test('Test createSSL()', async ()=> {
@@ -27,12 +27,12 @@ test('Test createSSL()', async ()=> {
   const ssl = await mkcert.createSSL({
     addresses: ['127.0.0.1', 'localhost'],
     validityDays: 365,
-    caPrivateKey: ca.privateKey,
-    caCertificate: ca.certificate
+    caKey: ca.key,
+    caCert: ca.cert
   });
 
-  expect(ssl.privateKey).toBeDefined();
-  expect(ssl.certificate).toBeDefined();
+  expect(ssl.key).toBeDefined();
+  expect(ssl.cert).toBeDefined();
 });
 
 // test.only('Test server for manual testing', async (cb)=> {
@@ -47,17 +47,17 @@ test('Test createSSL()', async ()=> {
 //   const ssl = await mkcert.createSSL({
 //     addresses: ['localhost', '127.0.0.1'],
 //     validityDays: 365,
-//     caPrivateKey: ca.privateKey,
-//     caCertificate: ca.certificate
+//     caPrivateKey: ca.key,
+//     caCertificate: ca.cert
 //   });
 
 //   const server = https.createServer({
-//     key: ssl.privateKey,
-//     cert: [ ssl.certificate, ca.certificate ].join('\n') //Create full chain by combining ca and domain certificate
+//     key: ssl.key,
+//     cert: [ ssl.cert, ca.cert ].join('\n') //Create full chain by combining ca and domain certificate
 //   }, (req, res)=> {
 //     res.end('This Works');
 //   });
 
 //   server.listen(9090);
-//   console.log(ca.certificate);
+//   console.log(ca.cert);
 // }, 10000000); //Run Indefinitely
