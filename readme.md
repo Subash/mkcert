@@ -7,7 +7,7 @@ npm install -g mkcert
 
 ## CLI
 
-### Create Certificate Authority
+### Create a Certificate Authority
 ```
 $ mkcert create-ca --help
 
@@ -24,7 +24,7 @@ $ mkcert create-ca --help
     -h, --help              output usage information
 ```
 
-### Create Certificate
+### Create a Certificate
 
 ```
 $ mkcert create-cert --help
@@ -42,10 +42,12 @@ $ mkcert create-cert --help
 ```
 
 ## API
+
+### Create a Certificate Authority
 ```js
 import * as mkcert from 'mkcert';
 
-//Create Certificate Authority
+//Create a Certificate Authority
 mkcert.createCA({
   organization: 'Hello CA',
   countryCode: 'NP',
@@ -55,22 +57,27 @@ mkcert.createCA({
 })
 .then((ca)=> {
   console.log(ca.key, ca.cert);
+})
+.catch(err=> console.error(err));
+```
 
-  //Create Certificate
-  mkcert.createSSL({
-    addresses: ['127.0.0.1', 'localhost'],
-    validityDays: 365,
-    caKey: ca.key,
-    caCert: ca.cert
-  })
-  .then((cert)=> {
-    console.log(cert.key, cert.cert);
-    //Create a full chain certificate by merging CA and SSL certificates
-    const fullChain = [ cert.cert, ca.cert ].join('\n');
-    console.log(fullChain);
-  })
-  .catch(err=> console.error(err));
+### Create a Certificate
+```js
+import * as mkcert from 'mkcert';
+//Create a CA first
 
+//Then create the certificate
+mkcert.createSSL({
+  addresses: ['127.0.0.1', 'localhost'],
+  validityDays: 365,
+  caKey: ca.key,
+  caCert: ca.cert
+})
+.then((cert)=> {
+  console.log(cert.key, cert.cert);
+  
+  //Create a full chain certificate by merging CA and SSL certificates
+  console.log(`${cert.cert}\n${ca.cert}`);
 })
 .catch(err=> console.error(err));
 ```
