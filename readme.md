@@ -1,4 +1,4 @@
-Create Self Signed Development Certificates
+Create self signed ssl certificates without OpenSSL.
 
 ## Install
 ```
