@@ -19,8 +19,12 @@ async function createCA({ organization, countryCode, state, locality, validity, 
   }
 
   //Write certificates
-  fs.writeFileSync(path.resolve(key), ca.key);
-  fs.writeFileSync(path.resolve(cert), ca.cert);
+  key = path.resolve(key);
+  fs.writeFileSync(key, ca.key);
+  console.log(`CA Private Key: ${key}`);
+  cert = path.resolve(cert);
+  fs.writeFileSync(cert, ca.cert);
+  console.log(`CA Certificate: ${cert}`);
 }
 
 async function createCert({ addresses, caKey, caCert, validity, key, cert }) {
@@ -57,8 +61,12 @@ async function createCert({ addresses, caKey, caCert, validity, key, cert }) {
   }
 
   //Write certificates
-  fs.writeFileSync(path.resolve(key), ssl.key);
-  fs.writeFileSync(path.resolve(cert), [ ssl.cert, caCert ].join('\n')); //Create full chain by combining ca and domain certificate
+  key = path.resolve(key);
+  fs.writeFileSync(key, ssl.key);
+  console.log(`SSL Private Key: ${key}`);
+  cert = path.resolve(cert);
+  fs.writeFileSync(cert, [ ssl.cert, caCert ].join('\n')); //Create full chain by combining ca and domain certificate
+  console.log(`SSL Certificate: ${cert}`);
 }
 
 program
