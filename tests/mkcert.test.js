@@ -53,7 +53,7 @@ test('Test createSSL()', async ()=> {
 
 //   const server = https.createServer({
 //     key: ssl.key,
-//     cert: [ ssl.cert, ca.cert ].join('\n') //Create full chain by combining ca and domain certificate
+//     cert: `${ssl.cert}\n${ca.cert}` //Create full chain by combining ca and domain certificate
 //   }, (req, res)=> {
 //     res.end('This Works');
 //   });
