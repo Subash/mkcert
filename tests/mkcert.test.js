@@ -15,7 +15,7 @@ test('Test createCA()', async ()=> {
   expect(ca.cert).toBeDefined();
 });
 
-test('Test createSSL()', async ()=> {
+test('Test createCertificate()', async ()=> {
   const ca = await mkcert.createCA({
     organization: 'Test CA',
     countryCode: 'NP',
@@ -24,15 +24,15 @@ test('Test createSSL()', async ()=> {
     validityDays: 365
   });
 
-  const ssl = await mkcert.createSSL({
+  const tls = await mkcert.createCertificate({
     addresses: ['127.0.0.1', 'localhost'],
     validityDays: 365,
     caKey: ca.key,
     caCert: ca.cert
   });
 
-  expect(ssl.key).toBeDefined();
-  expect(ssl.cert).toBeDefined();
+  expect(tls.key).toBeDefined();
+  expect(tls.cert).toBeDefined();
 });
 
 // test.only('Test server for manual testing', async (cb)=> {
@@ -44,7 +44,7 @@ test('Test createSSL()', async ()=> {
 //     validityDays: 365
 //   });
 
-//   const ssl = await mkcert.createSSL({
+//   const tls = await mkcert.createCertificate({
 //     addresses: ['localhost', '127.0.0.1'],
 //     validityDays: 365,
 //     caKey: ca.key,
@@ -52,8 +52,8 @@ test('Test createSSL()', async ()=> {
 //   });
 
 //   const server = https.createServer({
-//     key: ssl.key,
-//     cert: `${ssl.cert}\n${ca.cert}` //Create full chain by combining ca and domain certificate
+//     key: tls.key,
+//     cert: `${tls.cert}\n${ca.cert}` //Create full chain by combining ca and domain certificate
 //   }, (req, res)=> {
 //     res.end('This Works');
 //   });

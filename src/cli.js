@@ -25,6 +25,7 @@ async function createCA({ organization, countryCode, state, locality, validity, 
   cert = path.resolve(cert);
   fs.writeFileSync(cert, ca.cert);
   console.log(`CA Certificate: ${cert}`);
+  console.log('Please keep the private key in a secure location');
 }
 
 async function createCert({ addresses, caKey, caCert, validity, key, cert }) {
@@ -36,37 +37,38 @@ async function createCert({ addresses, caKey, caCert, validity, key, cert }) {
   addresses = addresses.split(',').map( str=> str.trim()); //Split comma separated list of addresses
   if(!addresses.length) return console.error('`--address` must be a comma separated list of ip/domains.');
 
-  //Check if ca key exists
-  let caKeyData;
+  //Read CA data
+  const ca = {};
+
+  //Read CA key
   try {
-    caKeyData = fs.readFileSync(path.resolve(caKey), 'utf-8');
+    ca.key = fs.readFileSync(path.resolve(caKey), 'utf-8');
   } catch(err) {
     return console.error(`Unable to read \`${caKey}\`. Please run \`mkcert create-ca\` to create a new certificate authority.`);
   }
 
-  //Check if ca certificate exists
-  let caCertData;
+  //Read CA certificate
   try {
-    caCertData = fs.readFileSync(path.resolve(caCert), 'utf-8');
+    ca.cert = fs.readFileSync(path.resolve(caCert), 'utf-8');
   } catch(err) {
     return console.error(`Unable to read \`${caCert}\`. Please run \`mkcert create-ca\` to create a new certificate authority.`);
   }
 
   //Create the certificate
-  let ssl;
+  let tls;
   try {
-    ssl = await mkcert.createSSL({ addresses, validityDays: validity, caKey: caKeyData, caCert: caCertData });
+    tls = await mkcert.createCertificate({ addresses, validityDays: validity, caKey: ca.key, caCert: ca.cert });
   } catch (err) {
     return console.error(`Failed to create the certificate. Error: ${err.message}`);
   }
 
   //Write certificates
   key = path.resolve(key);
-  fs.writeFileSync(key, ssl.key);
-  console.log(`SSL Private Key: ${key}`);
+  fs.writeFileSync(key, tls.key);
+  console.log(`Private Key: ${key}`);
   cert = path.resolve(cert);
-  fs.writeFileSync(cert, `${ssl.cert}\n${caCertData}`); //Create full chain by combining ca and domain certificate
-  console.log(`SSL Certificate: ${cert}`);
+  fs.writeFileSync(cert, `${tls.cert}\n${ca.cert}`); //Create full chain by combining ca and domain certificate
+  console.log(`Certificate: ${cert}`);
 }
 
 program

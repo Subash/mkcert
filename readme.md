@@ -67,7 +67,7 @@ import * as mkcert from 'mkcert';
 //Create a CA first
 
 //Then create the certificate
-mkcert.createSSL({
+mkcert.createCertificate({
   addresses: ['127.0.0.1', 'localhost'],
   validityDays: 365,
   caKey: ca.key,

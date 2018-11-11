@@ -4,7 +4,7 @@ import isIp from 'is-ip';
 import randomInt from 'random-int';
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
 
-async function createCertificate({ subject, issuer, extensions, validityDays, signWith }) {
+async function generateCertificate({ subject, issuer, extensions, validityDays, signWith }) {
   const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
   const cert = pki.createCertificate();
   const serial = randomInt(50000, 99999).toString(); //Generate a random number between 50K and 100K
@@ -55,7 +55,7 @@ export async function createCA({ organization, countryCode, state, locality, val
     { name: 'keyUsage', keyCertSign: true, critical: true }
   ];
 
-  return await createCertificate({
+  return await generateCertificate({
     subject: attributes,
     issuer: attributes,
     extensions: extensions,
@@ -63,7 +63,7 @@ export async function createCA({ organization, countryCode, state, locality, val
   });
 }
 
-export async function createSSL({ addresses, validityDays, caKey, caCert }) {
+export async function createCertificate({ addresses, validityDays, caKey, caCert }) {
   //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: addresses[0] } //Use the first address as common name
@@ -89,7 +89,7 @@ export async function createSSL({ addresses, validityDays, caKey, caCert }) {
   const ca = pki.certificateFromPem(caCert);
 
   //Create the cert
-  return await createCertificate({
+  return await generateCertificate({
     subject: attributes,
     issuer: ca.subject.attributes,
     extensions: extensions,
