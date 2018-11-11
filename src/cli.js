@@ -65,7 +65,7 @@ async function createCert({ addresses, caKey, caCert, validity, key, cert }) {
   fs.writeFileSync(key, ssl.key);
   console.log(`SSL Private Key: ${key}`);
   cert = path.resolve(cert);
-  fs.writeFileSync(cert, `${cert.cert}\n${caCertData}`); //Create full chain by combining ca and domain certificate
+  fs.writeFileSync(cert, `${ssl.cert}\n${caCertData}`); //Create full chain by combining ca and domain certificate
   console.log(`SSL Certificate: ${cert}`);
 }
 
