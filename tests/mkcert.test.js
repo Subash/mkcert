@@ -47,8 +47,8 @@ test('Test createSSL()', async ()=> {
 //   const ssl = await mkcert.createSSL({
 //     addresses: ['localhost', '127.0.0.1'],
 //     validityDays: 365,
-//     caPrivateKey: ca.key,
-//     caCertificate: ca.cert
+//     caKey: ca.key,
+//     caCert: ca.cert
 //   });
 
 //   const server = https.createServer({
