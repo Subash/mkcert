@@ -15,7 +15,7 @@ test('Test createCA()', async ()=> {
   expect(ca.cert).toBeDefined();
 });
 
-test('Test createCertificate()', async ()=> {
+test('Test createCert()', async ()=> {
   const ca = await mkcert.createCA({
     organization: 'Test CA',
     countryCode: 'NP',
@@ -24,8 +24,8 @@ test('Test createCertificate()', async ()=> {
     validityDays: 365
   });
 
-  const tls = await mkcert.createCertificate({
-    addresses: ['127.0.0.1', 'localhost'],
+  const tls = await mkcert.createCert({
+    domains: ['127.0.0.1', 'localhost'],
     validityDays: 365,
     caKey: ca.key,
     caCert: ca.cert
@@ -44,8 +44,8 @@ test('Test createCertificate()', async ()=> {
 //     validityDays: 365
 //   });
 
-//   const tls = await mkcert.createCertificate({
-//     addresses: ['localhost', '127.0.0.1'],
+//   const tls = await mkcert.createCert({
+//     domains: ['localhost', '127.0.0.1'],
 //     validityDays: 365,
 //     caKey: ca.key,
 //     caCert: ca.cert

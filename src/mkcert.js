@@ -4,7 +4,7 @@ import isIp from 'is-ip';
 import randomInt from 'random-int';
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
 
-async function generateCertificate({ subject, issuer, extensions, validityDays, signWith }) {
+async function generateCert({ subject, issuer, extensions, validityDays, signWith }) {
   const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
   const cert = pki.createCertificate();
   const serial = randomInt(50000, 99999).toString(); //Generate a random number between 50K and 100K
@@ -55,7 +55,7 @@ export async function createCA({ organization, countryCode, state, locality, val
     { name: 'keyUsage', keyCertSign: true, critical: true }
   ];
 
-  return await generateCertificate({
+  return await generateCert({
     subject: attributes,
     issuer: attributes,
     extensions: extensions,
@@ -63,10 +63,10 @@ export async function createCA({ organization, countryCode, state, locality, val
   });
 }
 
-export async function createCertificate({ addresses, validityDays, caKey, caCert }) {
+export async function createCert({ domains, validityDays, caKey, caCert }) {
   //Certificate Attributes: https://git.io/fptna
   const attributes = [
-    { name: 'commonName', value: addresses[0] } //Use the first address as common name
+    { name: 'commonName', value: domains[0] } //Use the first address as common name
   ];
 
   //Certificate extensions for a domain certificate
@@ -74,13 +74,13 @@ export async function createCertificate({ addresses, validityDays, caKey, caCert
     { name: 'basicConstraints', cA: false, critical: true },
     { name: 'keyUsage', digitalSignature: true, keyEncipherment: true, critical: true },
     { name: 'extKeyUsage', serverAuth: true, clientAuth: true },
-    { name: 'subjectAltName', altNames: addresses.map( address=> {
+    { name: 'subjectAltName', altNames: domains.map( domain=> {
       // Available Types: https://git.io/fptng
       const types = { domain: 2, ip: 7 };
-      if(isIp(address)) {
-        return { type: types.ip, ip: address };
+      if(isIp(domain)) {
+        return { type: types.ip, ip: domain };
       } else {
-        return { type: types.domain, value: address };
+        return { type: types.domain, value: domain };
       }
     })}
   ];
@@ -89,7 +89,7 @@ export async function createCertificate({ addresses, validityDays, caKey, caCert
   const ca = pki.certificateFromPem(caCert);
 
   //Create the cert
-  return await generateCertificate({
+  return await generateCert({
     subject: attributes,
     issuer: ca.subject.attributes,
     extensions: extensions,

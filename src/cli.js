@@ -28,14 +28,14 @@ async function createCA({ organization, countryCode, state, locality, validity, 
   console.log('Please keep the private key in a secure location');
 }
 
-async function createCert({ addresses, caKey, caCert, validity, key, cert }) {
+async function createCert({ domains, caKey, caCert, validity, key, cert }) {
   //Validate days
   validity = Number.parseInt(validity, 10);
   if(!validity || validity < 0) return console.error('`--validity` must be at least 1 day.');
 
   //Validate addresses
-  addresses = addresses.split(',').map( str=> str.trim()); //Split comma separated list of addresses
-  if(!addresses.length) return console.error('`--address` must be a comma separated list of ip/domains.');
+  domains = domains.split(',').map( str=> str.trim()); //Split comma separated list of addresses
+  if(!domains.length) return console.error('`--domains` must be a comma separated list of ip/domains.');
 
   //Read CA data
   const ca = {};
@@ -57,7 +57,7 @@ async function createCert({ addresses, caKey, caCert, validity, key, cert }) {
   //Create the certificate
   let tls;
   try {
-    tls = await mkcert.createCertificate({ addresses, validityDays: validity, caKey: ca.key, caCert: ca.cert });
+    tls = await mkcert.createCert({ domains, validityDays: validity, caKey: ca.key, caCert: ca.cert });
   } catch (err) {
     return console.error(`Failed to create the certificate. Error: ${err.message}`);
   }
@@ -92,7 +92,7 @@ program
   .option('--validity [days]', 'Validity in days', 365)
   .option('--key [file]', 'Output key', 'cert.key')
   .option('--cert [file]', 'Output certificate', 'cert.crt')
-  .option('--addresses [values]', 'Comma separated list of domains/ip addresses', 'localhost,127.0.0.1')
+  .option('--domains [values]', 'Comma separated list of domains/ip addresses', 'localhost,127.0.0.1')
   .action((...args)=> {
     const options = args.reverse()[0];
     createCert(options);

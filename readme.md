@@ -32,13 +32,13 @@ $ mkcert create-cert --help
   Usage: create-cert [options]
 
   Options:
-    --ca-key [file]       CA private key (default: "ca.key")
-    --ca-cert [file]      CA certificate (default: "ca.crt")
-    --validity [days]     Validity in days (default: 365)
-    --key [file]          Output key (default: "cert.key")
-    --cert [file]         Output certificate (default: "cert.crt")
-    --addresses [values]  Comma separated list of domains/ip addresses (default: "localhost,127.0.0.1")
-    -h, --help            output usage information
+    --ca-key [file]     CA private key (default: "ca.key")
+    --ca-cert [file]    CA certificate (default: "ca.crt")
+    --validity [days]   Validity in days (default: 365)
+    --key [file]        Output key (default: "cert.key")
+    --cert [file]       Output certificate (default: "cert.crt")
+    --domains [values]  Comma separated list of domains/ip addresses (default: "localhost,127.0.0.1")
+    -h, --help          output usage information
 ```
 
 ## API
@@ -67,8 +67,8 @@ import * as mkcert from 'mkcert';
 //Create a CA first
 
 //Then create the certificate
-mkcert.createCertificate({
-  addresses: ['127.0.0.1', 'localhost'],
+mkcert.createCert({
+  domains: ['127.0.0.1', 'localhost'],
   validityDays: 365,
   caKey: ca.key,
   caCert: ca.cert
