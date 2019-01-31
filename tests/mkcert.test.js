@@ -1,5 +1,5 @@
-import * as mkcert from '../src/mkcert';
-import https from 'https';
+const mkcert = require('../src/mkcert');
+const https = require('https');
 jest.setTimeout(20 * 1000); //Generating RSA key pairs can take some time
 
 test('Test createCA()', async ()=> {
@@ -10,7 +10,7 @@ test('Test createCA()', async ()=> {
     locality: 'Kathmandu',
     validityDays: 365
   });
-  
+
   expect(ca.key).toBeDefined();
   expect(ca.cert).toBeDefined();
 });

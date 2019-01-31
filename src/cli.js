@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import program from 'commander';
-import pkg from '../package.json';
-import path from 'path';
-import fs from 'fs';
-import * as mkcert from './mkcert';
+const program = require('commander');
+const pkg = require('../package.json');
+const path = require('path');
+const fs = require('fs');
+const mkcert = require('./mkcert');
 
 async function createCA({ organization, countryCode, state, locality, validity, key, cert }) {
   //Validate days

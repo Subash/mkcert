@@ -1,7 +1,8 @@
-import forge, { pki } from 'node-forge';
-import { promisify } from 'util';
-import isIp from 'is-ip';
-import randomInt from 'random-int';
+const forge = require('node-forge');
+const { promisify } = require('util');
+const isIp = require('is-ip');
+const randomInt = require('random-int');
+const pki = forge.pki;
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
 
 async function generateCert({ subject, issuer, extensions, validityDays, signWith }) {
@@ -10,7 +11,7 @@ async function generateCert({ subject, issuer, extensions, validityDays, signWit
   const serial = randomInt(50000, 99999).toString(); //Generate a random number between 50K and 100K
 
   //Use the provided private key to sign the certificate if that exists; otherwise sign the certificate with own key
-  signWith = signWith? pki.privateKeyFromPem(signWith): keyPair.privateKey; 
+  signWith = signWith? pki.privateKeyFromPem(signWith): keyPair.privateKey;
 
   //Set public key
   cert.publicKey = keyPair.publicKey;
@@ -39,7 +40,7 @@ async function generateCert({ subject, issuer, extensions, validityDays, signWit
   };
 }
 
-export async function createCA({ organization, countryCode, state, locality, validityDays }) {
+async function createCA({ organization, countryCode, state, locality, validityDays }) {
   //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: organization },
@@ -63,7 +64,7 @@ export async function createCA({ organization, countryCode, state, locality, val
   });
 }
 
-export async function createCert({ domains, validityDays, caKey, caCert }) {
+async function createCert({ domains, validityDays, caKey, caCert }) {
   //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: domains[0] } //Use the first address as common name
@@ -97,3 +98,5 @@ export async function createCert({ domains, validityDays, caKey, caCert }) {
     signWith: caKey
   });
 }
+
+module.exports = { createCA, createCert };
