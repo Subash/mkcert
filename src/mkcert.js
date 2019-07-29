@@ -5,8 +5,9 @@ const randomInt = require('random-int');
 const pki = forge.pki;
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
 
-async function generateCert({ subject, issuer, extensions, validityDays, signWith }) {
-  const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
+async function generateCert({ subject, issuer, extensions, validityDays, signWith, bits }) {
+  bits = bits || 2048;
+  const keyPair = await generateKeyPair({ bits, workers: 4 });
   const cert = pki.createCertificate();
   const serial = randomInt(50000, 99999).toString(); //Generate a random number between 50K and 100K
 
@@ -40,7 +41,7 @@ async function generateCert({ subject, issuer, extensions, validityDays, signWit
   };
 }
 
-async function createCA({ organization, countryCode, state, locality, validityDays }) {
+async function createCA({ organization, countryCode, state, locality, validityDays, bits }) {
   //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: organization },
@@ -60,11 +61,12 @@ async function createCA({ organization, countryCode, state, locality, validityDa
     subject: attributes,
     issuer: attributes,
     extensions: extensions,
-    validityDays: validityDays
+    validityDays: validityDays,
+    bits
   });
 }
 
-async function createCert({ domains, validityDays, caKey, caCert }) {
+async function createCert({ domains, validityDays, caKey, caCert, bits }) {
   //Certificate Attributes: https://git.io/fptna
   const attributes = [
     { name: 'commonName', value: domains[0] } //Use the first address as common name
@@ -95,7 +97,8 @@ async function createCert({ domains, validityDays, caKey, caCert }) {
     issuer: ca.subject.attributes,
     extensions: extensions,
     validityDays: validityDays,
-    signWith: caKey
+    signWith: caKey,
+    bits
   });
 }
 

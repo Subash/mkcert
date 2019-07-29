@@ -5,15 +5,17 @@ const path = require('path');
 const fs = require('fs');
 const mkcert = require('./mkcert');
 
-async function createCA({ organization, countryCode, state, locality, validity, key, cert }) {
+async function createCA({ organization, countryCode, state, locality, validity, key, cert, bits }) {
   //Validate days
   validity = Number.parseInt(validity, 10);
   if(!validity || validity < 0) return console.error('`--validity` must be at least 1 day.');
 
+  bits = Number.parseInt(bits);
+
   //Create the certificate
   let ca;
   try {
-    ca = await mkcert.createCA({ organization, countryCode, state, locality, validityDays: validity });
+    ca = await mkcert.createCA({ organization, countryCode, state, locality, validityDays: validity , bits});
   } catch (err) {
     return console.error(`Failed to create the certificate. Error: ${err.message}`);
   }
@@ -28,7 +30,7 @@ async function createCA({ organization, countryCode, state, locality, validity, 
   console.log('Please keep the private key in a secure location');
 }
 
-async function createCert({ domains, caKey, caCert, validity, key, cert }) {
+async function createCert({ domains, caKey, caCert, validity, key, cert, bits }) {
   //Validate days
   validity = Number.parseInt(validity, 10);
   if(!validity || validity < 0) return console.error('`--validity` must be at least 1 day.');
@@ -37,6 +39,8 @@ async function createCert({ domains, caKey, caCert, validity, key, cert }) {
   domains = domains.split(',').map( str=> str.trim()); //Split comma separated list of addresses
   if(!domains.length) return console.error('`--domains` must be a comma separated list of ip/domains.');
 
+  bits = Number.parseInt(bits);
+  
   //Read CA data
   const ca = {};
 
@@ -57,7 +61,7 @@ async function createCert({ domains, caKey, caCert, validity, key, cert }) {
   //Create the certificate
   let tls;
   try {
-    tls = await mkcert.createCert({ domains, validityDays: validity, caKey: ca.key, caCert: ca.cert });
+    tls = await mkcert.createCert({ domains, validityDays: validity, caKey: ca.key, caCert: ca.cert ,bits});
   } catch (err) {
     return console.error(`Failed to create the certificate. Error: ${err.message}`);
   }
@@ -80,6 +84,7 @@ program
   .option('--validity [days]', 'Validity in days', 365)
   .option('--key [file]', 'Output key', 'ca.key')
   .option('--cert [file]', 'Output certificate', 'ca.crt')
+  .option('--bits [value]', 'Key Size', 2048)
   .action((...args)=> {
     const options = args.reverse()[0];
     createCA(options);
@@ -93,6 +98,7 @@ program
   .option('--key [file]', 'Output key', 'cert.key')
   .option('--cert [file]', 'Output certificate', 'cert.crt')
   .option('--domains [values]', 'Comma separated list of domains/ip addresses', 'localhost,127.0.0.1')
+  .option('--bits [value]', 'Key Size', 2048)
   .action((...args)=> {
     const options = args.reverse()[0];
     createCert(options);
