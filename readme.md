@@ -43,41 +43,26 @@ $ mkcert create-cert --help
 
 ## API
 
-### Create a Certificate Authority
 ```js
 import * as mkcert from 'mkcert';
 
-//Create a Certificate Authority
-mkcert.createCA({
+// create a certificate authority
+const ca = await mkcert.createCA({
   organization: 'Hello CA',
   countryCode: 'NP',
   state: 'Bagmati',
   locality: 'Kathmandu',
   validityDays: 365
-})
-.then((ca)=> {
-  console.log(ca.key, ca.cert);
-})
-.catch(err=> console.error(err));
-```
+});
 
-### Create a Certificate
-```js
-import * as mkcert from 'mkcert';
-//Create a CA first
-
-//Then create the certificate
-mkcert.createCert({
+// then create the certificate
+const cert = await mkcert.createCert({
   domains: ['127.0.0.1', 'localhost'],
   validityDays: 365,
   caKey: ca.key,
   caCert: ca.cert
-})
-.then((cert)=> {
-  console.log(cert.key, cert.cert);
+});
 
-  //Create a full chain certificate by merging CA and domain certificates
-  console.log(`${cert.cert}\n${ca.cert}`);
-})
-.catch(err=> console.error(err));
+console.log(cert.key, cert.cert); // certificate info
+console.log(`${cert.cert}\n${ca.cert}`); // create a full chain certificate by merging CA and domain certificates
 ```
