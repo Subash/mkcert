@@ -44,7 +44,7 @@ $ mkcert create-cert --help
 ## API
 
 ```js
-import * as mkcert from 'mkcert';
+const mkcert = require('mkcert');
 
 // create a certificate authority
 const ca = await mkcert.createCA({
@@ -55,7 +55,7 @@ const ca = await mkcert.createCA({
   validityDays: 365
 });
 
-// then create the certificate
+// then create a tls certificate
 const cert = await mkcert.createCert({
   domains: ['127.0.0.1', 'localhost'],
   validityDays: 365,
