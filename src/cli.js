@@ -25,7 +25,7 @@ async function createCA({ organization, countryCode, state, locality, validity, 
   cert = path.resolve(cert);
   fs.writeFileSync(cert, ca.cert);
   console.log(`CA Certificate: ${cert}`);
-  console.log('Please keep the private key in a secure location');
+  console.log('Please keep the private key in a secure location.');
 }
 
 async function createCert({ domains, caKey, caCert, validity, key, cert }) {
@@ -34,7 +34,7 @@ async function createCert({ domains, caKey, caCert, validity, key, cert }) {
   if(!validity || validity < 0) return console.error('`--validity` must be at least 1 day.');
 
   // validate addresses
-  domains = domains.split(',').map( str=> str.trim()); //Split comma separated list of addresses
+  domains = domains.split(',').map( str=> str.trim()); // split comma separated list of addresses
   if(!domains.length) return console.error('`--domains` must be a comma separated list of ip/domains.');
 
   // read CA data
