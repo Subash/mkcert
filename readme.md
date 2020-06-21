@@ -1,4 +1,4 @@
-Create self signed ssl certificates without OpenSSL.
+Create self signed tls certificates without OpenSSL.
 
 ## Install
 ```
