@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-const program = require('commander');
-const pkg = require('../package.json');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
+const program = require('commander');
 const mkcert = require('./mkcert');
+const pkg = require('../package.json');
 
 async function createCA({ organization, countryCode, state, locality, validity, key, cert }) {
   validity = Number.parseInt(validity, 10);
