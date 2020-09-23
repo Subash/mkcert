@@ -1,6 +1,6 @@
 {
   "name": "mkcert",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Create Self Signed Development Certificates",
   "main": "src/mkcert.js",
   "bin": {
@@ -35,10 +35,10 @@
   "dependencies": {
     "commander": "^5.1.0",
     "is-ip": "^3.1.0",
-    "node-forge": "^0.9.1",
+    "node-forge": "^0.10.0",
     "random-int": "^2.0.1"
   },
   "devDependencies": {
-    "jest": "^26.0.1"
+    "jest": "^26.4.2"
   }
 }
