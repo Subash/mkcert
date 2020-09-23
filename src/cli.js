@@ -80,6 +80,7 @@ program
 
 program
   .command('create-cert')
+  .alias('create-certificate')
   .option('--ca-key [file]', 'CA private key', 'ca.key')
   .option('--ca-cert [file]', 'CA certificate', 'ca.crt')
   .option('--validity [days]', 'Validity in days', 365)
