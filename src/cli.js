@@ -6,11 +6,9 @@ const fs = require('fs');
 const mkcert = require('./mkcert');
 
 async function createCA({ organization, countryCode, state, locality, validity, key, cert }) {
-  // validate days
   validity = Number.parseInt(validity, 10);
   if(!validity || validity < 0) return console.error('`--validity` must be at least 1 day.');
 
-  // create the certificate
   let ca;
   try {
     ca = await mkcert.createCA({ organization, countryCode, state, locality, validityDays: validity });
@@ -18,43 +16,38 @@ async function createCA({ organization, countryCode, state, locality, validity, 
     return console.error(`Failed to create the certificate. Error: ${err.message}`);
   }
 
-  // write certificates
   key = path.resolve(key);
   fs.writeFileSync(key, ca.key);
   console.log(`CA Private Key: ${key}`);
+
   cert = path.resolve(cert);
   fs.writeFileSync(cert, ca.cert);
   console.log(`CA Certificate: ${cert}`);
+
   console.log('Please keep the private key in a secure location.');
 }
 
 async function createCert({ domains, caKey, caCert, validity, key, cert }) {
-  // validate days
   validity = Number.parseInt(validity, 10);
   if(!validity || validity < 0) return console.error('`--validity` must be at least 1 day.');
 
-  // validate addresses
-  domains = domains.split(',').map( str=> str.trim()); // split comma separated list of addresses
+  domains = domains.split(',').map( str=> str.trim()); // split the comma separated list of addresses
   if(!domains.length) return console.error('`--domains` must be a comma separated list of ip/domains.');
 
-  // read CA data
   const ca = {};
 
-  // read CA key
   try {
     ca.key = fs.readFileSync(path.resolve(caKey), 'utf-8');
   } catch(err) {
     return console.error(`Unable to read \`${caKey}\`. Please run \`mkcert create-ca\` to create a new certificate authority.`);
   }
 
-  // read CA certificate
   try {
     ca.cert = fs.readFileSync(path.resolve(caCert), 'utf-8');
   } catch(err) {
     return console.error(`Unable to read \`${caCert}\`. Please run \`mkcert create-ca\` to create a new certificate authority.`);
   }
 
-  // create the certificate
   let tls;
   try {
     tls = await mkcert.createCert({ domains, validityDays: validity, caKey: ca.key, caCert: ca.cert });
@@ -62,12 +55,12 @@ async function createCert({ domains, caKey, caCert, validity, key, cert }) {
     return console.error(`Failed to create the certificate. Error: ${err.message}`);
   }
 
-  // write certificates
   key = path.resolve(key);
   fs.writeFileSync(key, tls.key);
   console.log(`Private Key: ${key}`);
+
   cert = path.resolve(cert);
-  fs.writeFileSync(cert, `${tls.cert}\n${ca.cert}`); // create full chain by combining ca and domain certificate
+  fs.writeFileSync(cert, `${tls.cert}\n${ca.cert}`); // create full chain certificate file by combining ca and domain certificate
   console.log(`Certificate: ${cert}`);
 }
 
@@ -102,5 +95,4 @@ program
   .version(pkg.version)
   .parse(process.argv);
 
-// show help by default
 if(process.argv.length < 3) program.outputHelp();

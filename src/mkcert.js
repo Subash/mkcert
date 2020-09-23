@@ -1,31 +1,26 @@
+const isIp = require('is-ip');
 const forge = require('node-forge');
 const { promisify } = require('util');
-const isIp = require('is-ip');
 const randomInt = require('random-int');
 const pki = forge.pki;
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
 
 async function generateCert({ subject, issuer, extensions, validityDays, signWith }) {
+  const serial = randomInt(50000, 99999).toString();
   const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
   const cert = pki.createCertificate();
-  const serial = randomInt(50000, 99999).toString(); // generate a random number between 50K and 100K
 
-  // use the provided private key to sign the certificate if that exists
-  // otherwise sign the certificate with own key
-  signWith = signWith? pki.privateKeyFromPem(signWith): keyPair.privateKey;
-
-  // public key
   cert.publicKey = keyPair.publicKey;
-  cert.serialNumber = Buffer.from(serial).toString('hex'); // hex encode the serial number
-
-  // validity
+  cert.serialNumber = Buffer.from(serial).toString('hex'); // serial number must be hex encoded
   cert.validity.notBefore = new Date();
   cert.validity.notAfter = new Date();
   cert.validity.notAfter.setDate(cert.validity.notAfter.getDate() + validityDays);
-
   cert.setSubject(subject);
   cert.setIssuer(issuer);
   cert.setExtensions(extensions);
+
+  // sign the certificate with it's own private key if no separate signing key is provided
+  signWith = signWith? pki.privateKeyFromPem(signWith): keyPair.privateKey;
   cert.sign(signWith, forge.md.sha256.create());
 
   return {
@@ -44,7 +39,7 @@ async function createCA({ organization, countryCode, state, locality, validityDa
     { name: 'organizationName', value: organization }
   ];
 
-  // certificate extensions for a CA
+  // required certificate extensions for a certificate authority
   const extensions = [
     { name: 'basicConstraints', cA: true, critical: true },
     { name: 'keyUsage', keyCertSign: true, critical: true }
@@ -64,7 +59,7 @@ async function createCert({ domains, validityDays, caKey, caCert }) {
     { name: 'commonName', value: domains[0] } // use the first address as common name
   ];
 
-  // certificate extensions for a domain certificate
+  // required certificate extensions for a tls certificate
   const extensions = [
     { name: 'basicConstraints', cA: false, critical: true },
     { name: 'keyUsage', digitalSignature: true, keyEncipherment: true, critical: true },
@@ -76,10 +71,8 @@ async function createCert({ domains, validityDays, caKey, caCert }) {
     })}
   ];
 
-  // parse CA certificate
   const ca = pki.certificateFromPem(caCert);
 
-  // create the cert
   return await generateCert({
     subject: attributes,
     issuer: ca.subject.attributes,
