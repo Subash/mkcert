@@ -1,9 +1,24 @@
 const forge = require('node-forge');
+forge.options.usePureJavaScript = true;
 const { promisify } = require('util');
 const isIp = require('is-ip');
-const randomInt = require('random-int');
 const pki = forge.pki;
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
+
+function randomInt(minimum, maximum) {
+  if (maximum === undefined) {
+    maximum = minimum;
+    minimum = 0;
+  }
+
+  if (typeof minimum !== 'number' || typeof maximum !== 'number') {
+    throw new TypeError('Expected all arguments to be numbers');
+  }
+
+  return Math.floor(
+    (Math.random() * (maximum - minimum + 1)) + minimum
+  );
+}
 
 async function generateCert({ subject, issuer, extensions, validityDays, signWith, bits }) {
   bits = bits || 2048;

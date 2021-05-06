@@ -1,6 +1,6 @@
 {
-  "name": "mkcert",
-  "version": "1.2.0",
+  "name": "mkcert-geek-fork",
+  "version": "1.2.1",
   "description": "Create Self Signed Development Certificates",
   "main": "src/mkcert.js",
   "bin": {
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Subash/mkcert.git"
+    "url": "git+https://github.com/GeekInCompany/mkcert.git"
   },
   "keywords": [
     "signed",
@@ -33,10 +33,9 @@
   },
   "homepage": "https://github.com/Subash/mkcert#readme",
   "dependencies": {
-    "commander": "^2.19.0",
-    "is-ip": "^2.0.0",
-    "node-forge": "^0.7.6",
-    "random-int": "^1.0.0"
+    "commander": "^7.2.0",
+    "is-ip": "^3.1.0",
+    "node-forge": "^0.10.0"
   },
   "devDependencies": {
     "jest": "^24.0.0"
