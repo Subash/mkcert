@@ -34,7 +34,7 @@
   "homepage": "https://github.com/Subash/mkcert#readme",
   "dependencies": {
     "commander": "^6.1.0",
-    "is-ip": "^3.1.0",
+    "ip-regex": "^4.3.0",
     "node-forge": "^0.10.0"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-const isIp = require('is-ip');
+const ipRegex = require('ip-regex');
 const forge = require('node-forge');
 const { promisify } = require('util');
 const pki = forge.pki;
@@ -66,7 +66,9 @@ async function createCert({ domains, validityDays, caKey, caCert }) {
     { name: 'extKeyUsage', serverAuth: true, clientAuth: true },
     { name: 'subjectAltName', altNames: domains.map( domain=> {
       const types = { domain: 2, ip: 7 }; // available Types: https://git.io/fptng
-      if(isIp(domain)) return { type: types.ip, ip: domain };
+      const isIp = ipRegex({ exact: true }).test(domain);
+
+      if(isIp) return { type: types.ip, ip: domain };
       return { type: types.domain, value: domain };
     })}
   ];
