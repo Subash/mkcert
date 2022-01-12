@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
   "jest": {
     "testPathIgnorePatterns": [
