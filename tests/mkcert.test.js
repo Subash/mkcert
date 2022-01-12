@@ -1,5 +1,6 @@
 const mkcert = require('../src/mkcert');
 const https = require('https');
+const pki = require('node-forge').pki;
 jest.setTimeout(20 * 1000); //Generating RSA key pairs can take some time
 
 test('Test createCA()', async ()=> {
@@ -33,6 +34,30 @@ test('Test createCert()', async ()=> {
 
   expect(tls.key).toBeDefined();
   expect(tls.cert).toBeDefined();
+});
+
+test('Test verify certificate chain', async ()=> {
+  const ca = await mkcert.createCA({
+    organization: 'Test CA',
+    countryCode: 'NP',
+    state: 'Bagmati',
+    locality: 'Kathmandu',
+    validityDays: 365
+  });
+
+  const server = await mkcert.createCert({
+    domains: ['127.0.0.1', 'localhost'],
+    validityDays: 365,
+    caKey: ca.key,
+    caCert: ca.cert
+  });
+
+  const caStore = pki.createCaStore([ca.cert]);
+  const serverCert = pki.certificateFromPem(server.cert);
+
+  expect(() => {
+    pki.verifyCertificateChain(caStore, [serverCert]);
+  }).not.toThrow();
 });
 
 // test.only('Test server for manual testing', async (cb)=> {
