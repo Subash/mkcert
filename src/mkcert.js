@@ -1,12 +1,12 @@
 const isIp = require('is-ip');
 const forge = require('node-forge');
 const { promisify } = require('util');
-const randomInt = require('random-int');
 const pki = forge.pki;
 const generateKeyPair = promisify(pki.rsa.generateKeyPair.bind(pki.rsa));
 
 async function generateCert({ subject, issuer, extensions, validityDays, signWith }) {
-  const serial = randomInt(50000, 99999).toString();
+  // create serial from and integer between 50000 and 99999
+  const serial = Math.floor((Math.random() * 95000) + 50000).toString();
   const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
   const cert = pki.createCertificate();
 

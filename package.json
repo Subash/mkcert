@@ -35,8 +35,7 @@
   "dependencies": {
     "commander": "^6.1.0",
     "is-ip": "^3.1.0",
-    "node-forge": "^0.10.0",
-    "random-int": "^2.0.1"
+    "node-forge": "^0.10.0"
   },
   "devDependencies": {
     "jest": "^26.4.2"
