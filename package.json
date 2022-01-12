@@ -33,11 +33,11 @@
   },
   "homepage": "https://github.com/Subash/mkcert#readme",
   "dependencies": {
-    "commander": "^6.1.0",
+    "commander": "^8.3.0",
     "ip-regex": "^4.3.0",
-    "node-forge": "^0.10.0"
+    "node-forge": "^1.2.1"
   },
   "devDependencies": {
-    "jest": "^26.4.2"
+    "jest": "^27.4.7"
   }
 }
