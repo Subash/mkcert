@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const program = require('commander');
+const { program } = require('commander');
 const mkcert = require('./mkcert');
 const pkg = require('../package.json');
 
@@ -70,12 +70,11 @@ program
   .option('--country-code [value]', 'Country code', 'US')
   .option('--state [value]', 'State name', 'California')
   .option('--locality [value]', 'Locality address', 'San Francisco')
-  .option('--validity [days]', 'Validity in days', 365)
+  .option('--validity [days]', 'Validity in days', '365')
   .option('--key [file]', 'Output key', 'ca.key')
   .option('--cert [file]', 'Output certificate', 'ca.crt')
-  .action((...args)=> {
-    const options = args.reverse()[0];
-    createCA(options);
+  .action(async (options)=> {
+    await createCA(options);
   });
 
 program
@@ -83,17 +82,18 @@ program
   .alias('create-certificate')
   .option('--ca-key [file]', 'CA private key', 'ca.key')
   .option('--ca-cert [file]', 'CA certificate', 'ca.crt')
-  .option('--validity [days]', 'Validity in days', 365)
+  .option('--validity [days]', 'Validity in days', '365')
   .option('--key [file]', 'Output key', 'cert.key')
   .option('--cert [file]', 'Output certificate', 'cert.crt')
   .option('--domains [values]', 'Comma separated list of domains/ip addresses', 'localhost,127.0.0.1')
-  .action((...args)=> {
-    const options = args.reverse()[0];
-    createCert(options);
+  .action(async (options)=> {
+    await createCert(options);
   });
 
-program
-  .version(pkg.version)
-  .parse(process.argv);
+(async () => {
+  await program
+    .version(pkg.version)
+    .parseAsync(process.argv);
 
-if(process.argv.length < 3) program.outputHelp();
+  if(process.argv.length < 3) program.outputHelp();
+})();
