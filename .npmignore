@@ -1,4 +1,5 @@
-coverage
-node_modules
-tests
-.editorconfig
+/coverage
+/src
+/tests
+jest.config.js
+tsconfig.json
