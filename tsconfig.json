@@ -5,7 +5,9 @@
     "esModuleInterop": true,
     "lib": ["ES2020"],
     "module": "commonjs",
+    "noImplicitAny": true,
     "outDir": "dist",
+    "strict": true,
     "target": "ES2020"
   }
 }

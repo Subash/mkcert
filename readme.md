@@ -44,20 +44,18 @@ $ mkcert create-cert --help
 ```js
 import { createCA, createCert } from "mkcert";
 
-// create a certificate authority
 const ca = await createCA({
   organization: "Hello CA",
   countryCode: "NP",
   state: "Bagmati",
   locality: "Kathmandu",
-  validity: 365,
+  validity: 365
 });
 
-// then create a tls certificate
 const cert = await createCert({
   ca: { key: ca.key, cert: ca.cert },
   domains: ["127.0.0.1", "localhost"],
-  validity: 365,
+  validity: 365
 });
 
 console.log(cert.key, cert.cert); // certificate info

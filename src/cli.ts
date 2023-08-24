@@ -3,7 +3,6 @@ import { Option, program } from "commander";
 import { readFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import type { Certificate, CertificateAuthorityOptions } from "./mkcert";
 import { createCA, createCert } from "./mkcert";
 
 program
@@ -20,7 +19,7 @@ program
   .option("--key [file]", "output key file", "ca.key")
   .option("--cert [file]", "output certificate file", "ca.crt")
   .action(async (options) => {
-    const ca = await createCA(options as CertificateAuthorityOptions);
+    const ca = await createCA(options);
     await writeFile(options.key, ca.key);
     console.log(`CA Private Key: ${options.key}`);
     await writeFile(options.cert, ca.cert);
@@ -47,17 +46,13 @@ program
     };
 
     if (!ca.key || !ca.cert) {
-      ca = await createCA({
-        organization: "Test CA",
-        countryCode: "US",
-        state: "California",
-        locality: "San Francisco",
-        validity: 365
-      });
+      console.error("Unable to find CA key or certificate.");
+      console.error("Please run `mkcert create-ca` to create a new certificate authority.");
+      return;
     }
 
     const cert = await createCert({
-      ca: ca as Certificate,
+      ca: { key: ca.key, cert: ca.cert },
       domains: options.domain,
       validity: options.validity
     });
