@@ -1,5 +1,5 @@
-import ipRegex from "ip-regex";
 import { md, pki } from "node-forge";
+import net from "node:net";
 import { promisify } from "node:util";
 
 export type Certificate = {
@@ -80,6 +80,8 @@ export async function createCA(options: CertificateAuthorityOptions): Promise<Ce
 export type CertificateOptions = {
   domains: string[];
   validity: number;
+  organization?: string;
+  email?: string;
   ca: Certificate;
 };
 
@@ -88,6 +90,14 @@ export async function createCert(options: CertificateOptions): Promise<Certifica
   const attributes = [
     { name: "commonName", value: options.domains[0] } // use the first address as common name
   ];
+
+  if (options.organization) {
+    attributes.push({ name: "organizationName", value: options.organization });
+  }
+
+  if (options.email) {
+    attributes.push({ name: "emailAddress", value: options.email });
+  }
 
   // required certificate extensions for a tls certificate
   const extensions = [
@@ -106,7 +116,7 @@ export async function createCert(options: CertificateOptions): Promise<Certifica
         const TYPE_DOMAIN = 2;
         const TYPE_IP = 7;
 
-        if (ipRegex({ exact: true }).test(domain)) {
+        if (net.isIP(domain)) {
           return { type: TYPE_IP, ip: domain };
         }
 

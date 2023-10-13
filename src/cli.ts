@@ -38,6 +38,8 @@ program
   )
   .option("--key [file]", "output key file", "cert.key")
   .option("--cert [file]", "output certificate file", "cert.crt")
+  .option("--organization [value]", "optional organization name")
+  .option("--email [value]", "optional email address")
   .option("--domain [values...]", "domains or ip addresses", ["localhost", "127.0.0.1"])
   .action(async (options) => {
     let ca = {
@@ -54,7 +56,9 @@ program
     const cert = await createCert({
       ca: { key: ca.key, cert: ca.cert },
       domains: options.domain,
-      validity: options.validity
+      validity: options.validity,
+      organization: options.organization,
+      email: options.email
     });
 
     await writeFile(options.key, cert.key);

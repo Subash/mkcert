@@ -27,6 +27,8 @@ test("Create Certificate", async () => {
   const tls = await mkcert.createCert({
     ca: { key: ca.key, cert: ca.cert },
     domains: ["127.0.0.1", "localhost"],
+    email: "abc@example.com",
+    organization: "Test Cert",
     validity: 365
   });
 
