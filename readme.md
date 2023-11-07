@@ -35,7 +35,7 @@ $ mkcert create-cert --help
     --validity [days]     validity in days (default: 365)
     --key [file]          output key file (default: "cert.key")
     --cert [file]         output certificate file (default: "cert.crt")
-    --domain [values...]  domains or ip addresses (default: ["localhost","127.0.0.1"])
+    --domains [values...]  domains or ip addresses (default: ["localhost","127.0.0.1"])
     -h, --help            display help for command
 ```
 
