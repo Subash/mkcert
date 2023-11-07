@@ -40,7 +40,7 @@ program
   .option("--cert [file]", "output certificate file", "cert.crt")
   .option("--organization [value]", "optional organization name")
   .option("--email [value]", "optional email address")
-  .option("--domain [values...]", "domains or ip addresses", ["localhost", "127.0.0.1"])
+  .option("--domains, --domain [values...]", "domains or ip addresses", ["localhost", "127.0.0.1"])
   .action(async (options) => {
     let ca = {
       key: await readFile(options.caKey, "utf-8").catch(() => void 0),
