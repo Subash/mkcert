@@ -1,6 +1,6 @@
 {
   "name": "mkcert",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Create Self Signed Development Certificates",
   "main": "dist/mkcert.js",
   "types": "dist/mkcert.d.ts",
